@@ -1,0 +1,39 @@
+	entry go
+	extrn prout
+	extrn add, sub
+	extrn numb, card, opnget, libget, clsget
+	extrn functab, ftochar, chartof, print
+
+	empty begin, end
+
+go = <opnget 'file.txt'> <prout <doAll>> <clsget>
+
+doAll
+	= <transpose <getFile () <libget>>>
+	
+transpose
+	e1 ':=' e2 = <transpose e1 '=' e2 >
+	e1 = <pairEnd e1>
+	
+pairEnd
+	e1 'end' e2 = <rePair e1 '}'> <pairEnd e2>
+	e1 = e1
+
+rePair
+	R e1 'begin' e2 = e1 <pairEnd '{' e2>
+
+getFile 
+	(e1) v2 = <getFile(e1 v2 '\n') <libget>>
+	(e1) = e1
+
+proutFile 
+	e1 = <opnget e1><proutFileLines <libget>><libget><clsget>
+
+
+proutFileLines 
+	=
+	/0/ = 
+	'0' = 	
+	et = <prout et>
+
+

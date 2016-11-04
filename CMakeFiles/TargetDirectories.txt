@@ -1,0 +1,1 @@
+/home/kardamon/Documents/programs study/refal/refal-master/CMakeFiles/refal2.dir

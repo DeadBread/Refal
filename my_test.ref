@@ -1,0 +1,17 @@
+	entry go
+	extrn prout
+	extrn add, sub
+	extrn numb, card, opnget, libget, clsget
+
+go = <opnget 'file.txt'> <prout<fib /1/ /0/ <nb <libget>>>><clsget>
+
+fib
+	s(N)1 s(N)2 /0/ = s1 ',' s2
+	s(N)1 s(N)2 s(N)3 = s1 ',' <fib s2 <add (s1) s2> <sub (s3) /1/>>
+	
+nb
+	e1 s2 = <numb e1>
+	
+
+
+
