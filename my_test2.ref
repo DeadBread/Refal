@@ -4,24 +4,38 @@
 	extrn numb, card, opnget, libget, clsget
 	extrn functab, ftochar, chartof, print
 
-	empty begin, end
+	empty begin, end, procedure, function, var, type, const, fullend, while
 
-go = <opnget 'file.txt'> <prout <doAll>> <clsget>
+go = <opnget 'file.txt'> <prout <doAll>> <clsget> 
 
 doAll
-	= <transpose <getFile () <libget>>>
+	=  <transpose <pairEnd <getFile () <libget>>>>
 	
 transpose
+	e1 'procedure' e2 = <transpose e1 /procedure/ e2 >
+	e1 'function' e2 = <transpose e1 /function/ e2 >
+	e1 'const' e2 = <transpose e1 /const/ e2 >
+	e1 'type' e2 = <transpose e1 /type/ e2 >
+	e1 'var' e2 = <transpose e1 /var/ e2 >
+	e1 'while' e2 = <transpose e1 /while/ e2 >
+	e1 /begin/ e2 = <transpose e1 '{' e2 >
+	e1 /end/ e2 = <transpose e1 '}' e2 >
 	e1 ':=' e2 = <transpose e1 '=' e2 >
-	e1 = <pairEnd e1>
+	e1 = e1
 	
 pairEnd
-	e1 'end' e2 = <rePair e1 '}'> <pairEnd e2>
+	e1 'end' e2 =  <pairEnd <rePair e1 /end/> e2>
+	e1 'begin' e2 = <prout 'error pairEnd!'> <prout e1 'begin' e2>
 	e1 = e1
 
 rePair
-	R e1 'begin' e2 = e1 <pairEnd '{' e2>
-
+	R e1 'begin' e2 /end/ = e1 /begin/ e2 /end/
+	e1 = <prout 'error repair!'>
+	
+block
+	e1 /begin/ e2 /end/ e3 = <block e1> /begin/ <block e2> /end/ <block e3> 
+	e1 = e1	
+	
 getFile 
 	(e1) v2 = <getFile(e1 v2 '\n') <libget>>
 	(e1) = e1
@@ -35,5 +49,8 @@ proutFileLines
 	/0/ = 
 	'0' = 	
 	et = <prout et>
+	
+error 
+	= <prout 'error!'>
 
 
