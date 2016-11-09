@@ -32,15 +32,18 @@ transformConst
 	(e1) e2 = e1 ' = ' e2
 	
 var
-	'var' e1 ';' e2 = <section e1> ';\n' <var e2>
+	'var' e1 ';' e2 = <section e1> <var e2>
 	'begin' e2 = <body 'begin' e2>
 	e1 ';' e2 = <section e1> <var e2>
 	e1 = <prout 'var error!'>
 	
 section
-	e1 ',' e2 ':' e3 = <reNameType e3> ' ' e1 <section e2 ':' e3>
-	e1 ':' e2 = <reNameType e2> ' ' e1
+	e1 ',' e2 ':' e3 = <variable (e3) e1> <section e2 ':' e3>
+	e1 ':' e2 = <variable (e2) e1>
 	e1 = <prout 'section error!' e1>
+	
+variable 
+	(e1) e2 = <br 'var'e2'='<reNameType e1>> <reNameType e1> ' = ' e2 ';\n'
 	
 body
 	'begin' e1 'end.' = <processBody e1> '}\n'
@@ -92,7 +95,13 @@ typed
 	e1 = e1
 	
 print
-	e1 = 'printf(' e1 ')'
+	e1 = 'printf("' <typeID<cp 'var'e1>> '",'  e1 ')'
+	
+typeID
+	'int' = '%d'
+	'double' = '%f'
+	'float' = '%f'
+	'char' = '%c'
 	
 reNameType 
 	'integer' = 'int'

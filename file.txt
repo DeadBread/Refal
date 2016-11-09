@@ -1,6 +1,6 @@
 program mine(output);
 
-var i : integer;
+var i : integer; j : boolean;
 
 begin
   i := 1;
