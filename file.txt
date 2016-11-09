@@ -1,9 +1,11 @@
 program mine(output);
 
-var i : integer; j : boolean;
+var i : integer; 
+    j : double;
 
 begin
   i := 1;
-  writeln( i );
   j := 2;
+  writeln( i, j, "hwew");
+
 end.

@@ -95,7 +95,31 @@ typed
 	e1 = e1
 	
 print
-	e1 = 'printf("' <typeID<cp 'var'e1>> '",'  e1 ')'
+	e1 = 'printf("' <printTypesList e1> '",' <printVarList e1> ')'
+	
+printTypesList
+	e1 ',' e2 = <what e1> ', ' <printTypesList e2>
+	e1 = <what e1>
+	
+what 
+	v(D)1 = v1
+	'"' v1 '"' = v1 
+	e1 = <typeID<notEmpty <cp 'var'e1>>>
+	
+notEmpty
+	v1 = v1
+	= <error>
+	
+printVarList
+	R e1 ',' e2 = <printVarList e1> <isVar ',' e2> 
+	e1 = <isVar e1>
+	
+isVar
+	e2 v(D)1=
+	e2 '"' v1 '"' =
+	e2 ''' v1 ''' =
+	e1 = e1
+	
 	
 typeID
 	'int' = '%d'
