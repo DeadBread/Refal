@@ -16,7 +16,8 @@ getFile
 deleter
 	e1 ' ' e2 = <deleter e1 e2>
 	e1 '\n' e2 = <deleter e1 e2>
-	e1 = <printm<begRepeat <begEnd e1 /0/> /100/>>
+	e1 'for' e2 'do' s((';'))a e3 = <deleter e1 'for' e2 'do;' sa e3>
+	e1 = <printm <begRepeat <begEnd e1 /0/> /100/>>
 	
 begEnd
 	e1 'end;' e2 s(N)a = <begEnd <pairEnd e1 'end;' sa> e2 <p1 sa>>
@@ -69,17 +70,24 @@ processBody
 
 	e1 '{' s(N)a v9 '}' sa e2 = <processBody e1> '{\n' <processBody v9> '}\n' <processBody e2>
 	e1 ';' e2 = <operator e1> <processBody e2>
-	e1 = e1
+	e1 = <printm e1>
 	
 operator 
+	'for' e1 ':=' e2 'to' e3 'do' = <for (e1) e2 (e3)>
+	'for' e1 ':=' e2 'downto' e3 'do' = <for e1 (e2) e3>
 	e1 ':=' e2 = <assignment (e1) e2> ';\n'
 	'writeln(' e1 ')' = <print <list e1>> ';\n'
 	'rpt' = 'do'
-	'untl' e1 = 'while ( !' e1 ');\n' 
+	'untl' e1 = 'while ( !' e1 ');\n'
 	
+	e1 = <prout e1 '\n\n\n'>
 	
+for
+	(e1) e2 (e3) = 'for('<name e1> ' = ' <expression e2> '; ' e1 ' < ' <expression e3> '; ' e1 '++)\n    '
+	e1 (e2) e3 = 'for('<name e1> ' = ' <expression e2> '; ' e1 ' > ' <expression e3> '; ' e1 '--)\n    '
 	
-	
+name 
+	e1 = <checkName (<cp 'var' e1>) e1>
 	
 assignment
 	(e1) e2 = e1 ' = ' <expression e2>
@@ -92,7 +100,8 @@ expression
 	e1 = <simpleExpr e1>
 	
 simpleExpr
-	e1 ' + ' e2 = <summand e1> ' + ' <simpleExpr e2>
+	e1 '+' e2 = <summand e1> ' + ' <simpleExpr e2>
+	e1 '-' e2 = <summand e1> ' - ' <simpleExpr e2>
 	e1 = <summand e1>
 	
 summand
@@ -104,12 +113,17 @@ summand
 	
 factor 
 	v(D)1 = v1
-	e1 = <name e1>
+	e1 = <nameOrConst e1>
 	
-name 
-	e1 = e1
+nameOrConst
+	v(D)1 = v1
+	e1 = <checkName (<cp 'var' e1>) e1>
 	
-list 
+checkName
+	() e1 = <prout 'name error!' e1>
+	(v1) e2 = e2
+	
+list
 	e1 ',' e2 = <typed e1> ',' <list e2>
 	e1 = <typed e1>
 	
