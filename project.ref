@@ -1,6 +1,6 @@
 	entry go
 	extrn prout
-	extrn add, sub
+	extrn add, sub, p1
 	extrn numb, card, opnget, libget, clsget
 	extrn functab, ftochar, chartof, printm
 	extrn br, dg, cp, dgall
@@ -16,7 +16,15 @@ getFile
 deleter
 	e1 ' ' e2 = <deleter e1 e2>
 	e1 '\n' e2 = <deleter e1 e2>
-	e1 = e1
+	e1 = <begEnd e1 /0/>
+	
+begEnd
+	e1 'end;' e2 s(N)a = <begEnd <pairEnd e1 'end;' sa> e2 <p1 sa>>
+	e1 s(N)a = e1
+	
+pairEnd
+	R e1 'begin' e2 'end;' s(N)a = e1 '{' sa e2 '}' sa
+	e1 = <prout 'error end!' e1>
 	
 program
 	'program' e1 ';' e2 = 'int main() { \n'<const e2>
@@ -43,19 +51,22 @@ section
 	e1 = <prout 'section error!' e1>
 	
 variable 
-	(e1) e2 = <br 'var'e2'='<reNameType e1>> <reNameType e1> ' = ' e2 ';\n'
+	(e1) e2 = <br 'var'e2'='<reNameType e1>> <reNameType e1> ' ' e2 ';\n'
 	
 body
-	'begin' e1 'end.' = <processBody e1> '}\n'
-	e1 = <prout 'body error!' e1>
+	'begin' e1 'end.' = <processBody e1> '};\n'
+	e1 = <prout 'body error!' e1 '\n\n\n'>
 	
 processBody 
+	e1 '{' s(N)a v9 '}' sa e2 = <processBody e1> '{\n' <processBody v9> '}\n' <processBody e2>
 	e1 ';' e2 = <operator e1> <processBody e2>
 	e1 = e1
 	
 operator 
 	e1 ':=' e2 = <assignment (e1) e2> ';\n'
 	'writeln(' e1 ')' = <print <list e1>> ';\n'
+	
+	
 	
 	
 	
@@ -95,7 +106,7 @@ typed
 	e1 = e1
 	
 print
-	e1 = 'printf("' <printTypesList e1> '",' <printVarList e1> ')'
+	e1 = 'printf("' <printTypesList e1> '"' <printVarList e1> ')'
 	
 printTypesList
 	e1 ',' e2 = <what e1> ', ' <printTypesList e2>
@@ -111,13 +122,14 @@ notEmpty
 	= <error>
 	
 printVarList
-	R e1 ',' e2 = <printVarList e1> <isVar ',' e2> 
+	R e1 ',' e2 = <printVarList e1> <isVar e2> 
 	e1 = <isVar e1>
 	
 isVar
-	e2 v(D)1=
-	e2 '"' v1 '"' =
-	e2 ''' v1 ''' =
+	v(D)1=
+	'"' v1 '"' =
+	''' v1 ''' =
+	v1 = ',' v1
 	e1 = e1
 	
 	
