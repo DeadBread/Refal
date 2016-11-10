@@ -16,7 +16,7 @@ getFile
 deleter
 	e1 ' ' e2 = <deleter e1 e2>
 	e1 '\n' e2 = <deleter e1 e2>
-	e1 = <begEnd e1 /0/>
+	e1 = <printm<begRepeat <begEnd e1 /0/> /100/>>
 	
 begEnd
 	e1 'end;' e2 s(N)a = <begEnd <pairEnd e1 'end;' sa> e2 <p1 sa>>
@@ -25,6 +25,14 @@ begEnd
 pairEnd
 	R e1 'begin' e2 'end;' s(N)a = e1 '{' sa e2 '}' sa
 	e1 = <prout 'error end!' e1>
+	
+begRepeat
+	e1 'until' e2 ';' e3 s(N)a = <begRepeat <pairUntil e1 'until' sa> e2 ';' e3 <p1 sa>>
+	e1 s(N)a = e1 
+	
+pairUntil
+	R e1 'repeat' e2 'until' e3 s(N)a = e1 'rpt;{' sa e2 '}' sa 'untl' e3
+	e1 = <prout 'error repeat!' e1>
 	
 program
 	'program' e1 ';' e2 = 'int main() { \n'<const e2>
@@ -58,6 +66,7 @@ body
 	e1 = <prout 'body error!' e1 '\n\n\n'>
 	
 processBody 
+
 	e1 '{' s(N)a v9 '}' sa e2 = <processBody e1> '{\n' <processBody v9> '}\n' <processBody e2>
 	e1 ';' e2 = <operator e1> <processBody e2>
 	e1 = e1
@@ -65,6 +74,8 @@ processBody
 operator 
 	e1 ':=' e2 = <assignment (e1) e2> ';\n'
 	'writeln(' e1 ')' = <print <list e1>> ';\n'
+	'rpt' = 'do'
+	'untl' e1 = 'while ( !' e1 ');\n' 
 	
 	
 	

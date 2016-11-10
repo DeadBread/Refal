@@ -7,9 +7,9 @@ begin
   i := 1;
   j := 2 + 7 - 12;
   
-  begin
+  repeat
   writeln("asa");
-  end;
+  until 55;
   
   writeln( i, j, "hwew");
 end.
