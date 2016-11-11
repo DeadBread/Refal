@@ -14,10 +14,7 @@ begin
   for i := 2 to 10 do i := i + 1;
   
     
-  for i := 20 downto 10 do i = i + 1;
-  	
-
-  
+  for i := 20 downto 10 do i := i + 1;
   writeln( i, j, "hwew");
 end.
 

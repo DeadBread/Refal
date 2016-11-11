@@ -16,8 +16,7 @@ getFile
 deleter
 	e1 ' ' e2 = <deleter e1 e2>
 	e1 '\n' e2 = <deleter e1 e2>
-	e1 'for' e2 'do' s((';'))a e3 = <deleter e1 'for' e2 'do;' sa e3>
-	e1 = <printm <begRepeat <begEnd e1 /0/> /100/>>
+	e1 = <begRepeat <begEnd e1 /0/> /100/>
 	
 begEnd
 	e1 'end;' e2 s(N)a = <begEnd <pairEnd e1 'end;' sa> e2 <p1 sa>>
@@ -69,18 +68,19 @@ body
 processBody 
 
 	e1 '{' s(N)a v9 '}' sa e2 = <processBody e1> '{\n' <processBody v9> '}\n' <processBody e2>
+	'for' e1 'do' s(('w'))a e2 = <operator 'for' e1 'do' > <processBody s(('w'))a e2>
 	e1 ';' e2 = <operator e1> <processBody e2>
-	e1 = <printm e1>
+	e1 = e1
 	
 operator 
-	'for' e1 ':=' e2 'to' e3 'do' = <for (e1) e2 (e3)>
 	'for' e1 ':=' e2 'downto' e3 'do' = <for e1 (e2) e3>
+	'for' e1 ':=' e2 'to' e3 'do' = <for (e1) e2 (e3)>
 	e1 ':=' e2 = <assignment (e1) e2> ';\n'
 	'writeln(' e1 ')' = <print <list e1>> ';\n'
 	'rpt' = 'do'
 	'untl' e1 = 'while ( !' e1 ');\n'
 	
-	e1 = <prout e1 '\n\n\n'>
+	e1 = <prout '!!! ' e1 '\n'>
 	
 for
 	(e1) e2 (e3) = 'for('<name e1> ' = ' <expression e2> '; ' e1 ' < ' <expression e3> '; ' e1 '++)\n    '
