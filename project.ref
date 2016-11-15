@@ -1,6 +1,6 @@
 	entry go
 	extrn prout
-	extrn add, sub, p1
+	extrn add, sub, p1, m1
 	extrn numb, card, opnget, libget, clsget
 	extrn functab, ftochar, chartof, printm
 	extrn br, dg, cp, dgall
@@ -62,9 +62,9 @@ program
 	
 	
 const 
-	e(' ')9 'const ' e1 '=' e2 ';' e3 = 'const ' <typeConst e2> ' ' e1 '='e2 <br 'const'<typeConst e2> <unspace e1> '=' <unspace e2>> ';\n' <const /0/ e3>
+	e(' ')9 'const ' e1 '=' e2 ';' e3 = <white /1/> 'const ' <typeConst e2> ' ' e1 '='e2 <br 'const'<typeConst e2> <unspace e1> '=' <unspace e2>> ';\n' <const /0/ e3>
 	/0/ e(' ')9 'var' e1 = <var 'var' e1>
-	/0/ e1 '=' e2 ';' e3 = 'const ' <typeConst e2> ' ' e1 '=' e2 <br 'const'<typeConst e2> <unspace e1> '=' <unspace e2>> ';\n' <const /0/ e3>
+	/0/ e1 '=' e2 ';' e3 = <white /1/> 'const ' <typeConst e2> ' ' e1 '=' e2 <br 'const'<typeConst e2> <unspace e1> '=' <unspace e2>> ';\n' <const /0/ e3>
 	e1 = <var e1>
 	
 typeConst
@@ -80,9 +80,9 @@ typeConst
 
 	
 var
-	e(' ')9 'var ' e1 ';' e2 = <section e1> <var e2>
-	e(' ')9 'begin ' e2 = <body 'begin ' e2>
-	e(' ')9 e1 '; ' e2 = <section e1> <var e2>
+	e(' ')9 'var ' e1 ';' e2 = <white /1/> <section e1> <var e2>
+	e(' ')9 'begin ' e2 = '\n'<body 'begin ' e2>
+	e(' ')9 e1 '; ' e2 = <white /1/> <section e1> <var e2>
 	e1 = <prout 'var error!'>
 	
 section
@@ -98,27 +98,29 @@ variable
 	
 
 body
-	'begin ' e1 'end.' e(' ')9 = <processBody e1> '};\n'
+	'begin ' e1 'end.' e(' ')9 = <processBody /1/ e1> '};\n'
 	e1 = <prout 'body error!' e1 '\n\n\n'>
 	
 processBody 
-	e(' ')9 'cs ' e2 'of' ( e3 ) 'endcs;' e4 = <switch (e2) e3> <processBody e4>
-	( v9 ) e2 = '{\n' <processBody v9> '}\n' <processBody e2>
-	e(' ')9 'for ' e1 'do ' e2 = <operator 'for ' e1 'do ' > <processBody e2>
-	e1 ';' e(' ')9 e2 = <operator <unspace e1>> <processBody e2>
-	e1 = e1
+	s(N)w e(' ')9 'cs ' e2 'of' ( e3 ) 'endcs;' e4 = <white sw> <switch sw (e2) e3> <processBody sw e4>
+	s(N)w ( v9 ) e2 = '\n' <white sw> '{\n' <processBody <p1 sw> v9> <white sw> '}\n' <processBody sw e2>
+	s(N)w e(' ')9 'for ' e1 'do ' e2 = <white sw> <operator 'for ' e1 'do ' > <processBody sw e2>
+	s(N)w e1 ';' e(' ')9 e2 = <white sw> <operator <unspace e1>> <processBody sw e2>
+	s(N)w e1 = e1
 	
 	
-	
+white
+	/0/ = ''
+	s(N)a = '     '<white <m1 sa>>
 	
 	
 switch
-	(e2) e3 = 'switch(' e2 ')\n{\n' <switchList e3 (<cp 'var'<unspace e2>>)> '}\n'
+	s(N)w (e2) e3 = 'switch(' e2 ')\n' <white sw> '{\n' <switchList <p1 sw> e3 (<cp 'var'<unspace e2>>)> <white sw> '}\n'
 	
 switchList
-	e1 ' : ' ( e2 ) sa e3 (e4) = 'case ' <eql e1 (e4)> ': { \n    ' <processBody e2> '}\n' <switchList e3 (e4)>
-	e1 ' : ' e2 ';' e3 (e4) = 'case ' <eql e1 (e4)> ' : ' <processBody e2 ';\n'> <switchList e3 (e4)>
-	e1 (e4) = e1
+	s(N)w e1 ' : ' ( e2 ) sa e3 (e4) = <white sw> 'case ' <eql e1 (e4)> ': { \n' <processBody <p1 sw> e2> <white sw> '}\n' <switchList sw e3 (e4)>
+	s(N)w e1 ' : ' e2 ';' e3 (e4) = <white sw> 'case ' <eql e1 (e4)> ' : ' <processBody /0/ e2 ';\n'> <switchList sw e3 (e4)>
+	s(N)w e1 (e4) = e1
 	
 	
 	
