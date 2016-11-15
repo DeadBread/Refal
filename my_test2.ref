@@ -2,14 +2,41 @@
 	extrn prout
 	extrn add, sub
 	extrn numb, card, opnget, libget, clsget
-	extrn functab, ftochar, chartof, print
+	extrn functab, ftochar, chartof, printm, p1
 
 	empty begin, end, procedure, function, var, type, const, fullend, while
 
 go = <opnget 'file.txt'> <prout <doAll>> <clsget> 
 
+deleter
+	e1 ' ' e2 = <deleter e1 e2>
+	e1 '\n' e2 = <deleter e1 e2>
+	e1 = e1
+
 doAll
-	=  <transpose <pairEnd <getFile () <libget>>>>
+	= <do <begCase <begEnd <deleter <getFile () <libget>>> /100/ > /10000/>>
+	
+	
+begCase
+	e1 'endcase;' e2 s(N)a = <begCase <pairCase e1 'endcs;' s(N)a> e2 <p1 sa>>
+	e1 s(N)a = <printm e1>
+	
+pairCase
+	R e1 'case' e2 'of' e3 'endcs;' s(N)a =  e1 <printm 'cs' e2 'of{' sa e3 '}' sa 'endcs;' > <prout '\n'>
+
+
+begEnd
+	e1 'end;' e2 s(N)a = <begEnd <pairEnd e1 'end;' sa> e2 <p1 sa>>
+	e1 s(N)a = e1
+	
+pairEnd
+	R e1 'begin' e2 'end;' s(N)a = e1 '{' sa e2 '}' sa
+	e1 = <prout 'error end!' e1>
+	
+do 
+	e1 'cs' e2 'of{' s(N)a e3 '}' sa 'endcs;' e4 = <prout 'INSIDE'>
+	e1 = <prout 'BAD'>
+	
 	
 transpose
 	e1 'procedure' e2 = <transpose e1 /procedure/ e2 >
@@ -22,15 +49,6 @@ transpose
 	e1 /end/ e2 = <transpose e1 '}' e2 >
 	e1 ':=' e2 = <transpose e1 '=' e2 >
 	e1 = e1
-	
-pairEnd
-	e1 'end' e2 =  <pairEnd <rePair e1 /end/> e2>
-	e1 'begin' e2 = <prout 'error pairEnd!'> <prout e1 'begin' e2>
-	e1 = e1
-
-rePair
-	R e1 'begin' e2 /end/ = e1 /begin/ e2 /end/
-	e1 = <prout 'error repair!'>
 	
 block
 	e1 /begin/ e2 /end/ e3 = <block e1> /begin/ <block e2> /end/ <block e3> 

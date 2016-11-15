@@ -1,5 +1,9 @@
 program mine(output);
 
+const 
+    alpha = 5;
+    beta = "beta";
+
 var i : integer; 
     j : double;
 
@@ -8,13 +12,34 @@ begin
   j := 2 + 7 - 12;
   
   repeat
-  writeln("asa");
+  writeln ("asa");
   until 55;
+  
+  writeln ("bread");
   
   for i := 2 to 10 do i := i + 1;
   
     
   for i := 20 downto 10 do i := i + 1;
-  writeln( i, j, "hwew");
+  
+  
+  case i of
+        0 : 
+        begin
+        writeln ("ноль");
+        writeln ("один");
+        writeln ("два");
+        end;
+        3 : writeln ("три");
+        4 : writeln ("четыре");
+        5 : writeln ("пять");
+        6 : writeln ("шесть");
+        7 : writeln ("семь");
+        8 : writeln ("восемь");
+        9 : writeln ("девять");
+      endcase;
+      
+  writeln (i, j, "hwew");
+  
 end.
 

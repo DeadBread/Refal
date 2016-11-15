@@ -14,73 +14,109 @@ getFile
 	(e1) = <deleter e1>
 	
 deleter
-	e1 ' ' e2 = <deleter e1 e2>
-	e1 '\n' e2 = <deleter e1 e2>
-	e1 = <begRepeat <begEnd e1 /0/> /100/>
+	e1 '\n' e2 = <deleter e1 ' ' e2>
+	e1 ' ' ' ' e2 = <deleter e1 ' ' e2>
+	e1 = <begEnd e1 /0/>
 	
 begEnd
 	e1 'end;' e2 s(N)a = <begEnd <pairEnd e1 'end;' sa> e2 <p1 sa>>
-	e1 s(N)a = e1
+	e1 s(N)a = <begRepeat e1 sa>
 	
 pairEnd
-	R e1 'begin' e2 'end;' s(N)a = e1 '{' sa e2 '}' sa
+	R e1 'begin ' e2 'end;' s(N)a = e1 '{' sa e2 '}' sa
 	e1 = <prout 'error end!' e1>
 	
 begRepeat
-	e1 'until' e2 ';' e3 s(N)a = <begRepeat <pairUntil e1 'until' sa> e2 ';' e3 <p1 sa>>
-	e1 s(N)a = e1 
+	e1 'until ' e2 ';' e3 s(N)a = <begRepeat <pairUntil e1 'until ' sa> e2 ';' e3 <p1 sa>>
+	e1 s(N)a = <begCase e1 sa>
+	e1 = <prout e1>
 	
 pairUntil
-	R e1 'repeat' e2 'until' e3 s(N)a = e1 'rpt;{' sa e2 '}' sa 'untl' e3
+	R e1 'repeat ' e2 'until ' e3 s(N)a = e1 'rpt; {' sa e2 '}' sa 'untl ' e3
 	e1 = <prout 'error repeat!' e1>
 	
+begCase
+	e1 'endcase;' e2 s(N)a = <begCase <pairCase e1 'endcs;' s(N)a> e2 <p1 sa>>
+	e1 s(N)a = <printm e1>
+	
+pairCase
+	R e1 'case ' e2 'of ' e3 'endcs;' s(N)a =  e1 'cs ' e2 'of{' sa e3 '}' sa 'endcs;'
+	
 program
-	'program' e1 ';' e2 = 'int main() { \n'<const e2>
+	'program ' e1 ';' e2 = 'int main() { \n'<const e2>
 	e1 = <error>
 	
 const 
-	'const' e1 '=' e2 ';' e3 = e1 ' = ' e2 <dg e1> <const /0/ e3>
-	/0/ e1 '=' e2 ';' e3 = <transformConst (e1) e2> <const /0/ e3>
-	/0/ e1 = <var e1>
+	e(' ')9 'const ' e1 '=' e2 ';' e3 = 'const ' <typeConst e2> ' ' e1 '='e2 <br 'const'<typeConst e2> e1 '=' e2> ';\n' <const /0/ e3>
+	/0/ e(' ')9 'var' e1 = <var 'var' e1>
+	/0/ e1 '=' e2 ';' e3 = 'const ' <typeConst e2> ' ' e1 '=' e2 <br 'const'<typeConst e2> e1 '=' e2> ';\n' <const /0/ e3>
 	e1 = <var e1>
+	
+typeConst
+	/0/ v(D)1 = 'int'
+	/0/ v(D)1 '.' v(D)2 = 'double'
+	/0/ '"' v1 '"' = 'char*'
+	/0/ e1 = <prout 'constTypeError "' e1 '"'>
+	e1 = <typeConst /0/ <unspace e1>>
+	
 	
 transformConst 
 	(e1) e2 = e1 ' = ' e2
 	
 var
-	'var' e1 ';' e2 = <section e1> <var e2>
-	'begin' e2 = <body 'begin' e2>
-	e1 ';' e2 = <section e1> <var e2>
+	e(' ')9 'var ' e1 ';' e2 = <section e1> <var e2>
+	e(' ')9 'begin ' e2 = <body 'begin ' e2>
+	e(' ')9 e1 '; ' e2 = <section e1> <var e2>
 	e1 = <prout 'var error!'>
 	
 section
-	e1 ',' e2 ':' e3 = <variable (e3) e1> <section e2 ':' e3>
+	e1 ',' e2 ':' e3 = <variable (e3) e1> <section e2 ' : ' e3>
 	e1 ':' e2 = <variable (e2) e1>
 	e1 = <prout 'section error!' e1>
 	
 variable 
-	(e1) e2 = <br 'var'e2'='<reNameType e1>> <reNameType e1> ' ' e2 ';\n'
-	
+	(e1) e2 = <br 'var' <unspace e2>'='<reNameType <unspace e1>>> <reNameType <unspace e1>> ' ' e2 ';\n'
+
 body
-	'begin' e1 'end.' = <processBody e1> '};\n'
+	'begin ' e1 'end.' e(' ')9 = <processBody e1> '};\n'
 	e1 = <prout 'body error!' e1 '\n\n\n'>
 	
 processBody 
 
-	e1 '{' s(N)a v9 '}' sa e2 = <processBody e1> '{\n' <processBody v9> '}\n' <processBody e2>
-	'for' e1 'do' s(('w'))a e2 = <operator 'for' e1 'do' > <processBody s(('w'))a e2>
-	e1 ';' e2 = <operator e1> <processBody e2>
+	'cs ' e2 'of{' s(N)a e3 '}' sa 'endcs;' e4 = <switch (e2) e3> <processBody e4>
+	'{' s(N)a v9 '}' sa e2 = '{\n' <processBody v9> '}\n' <processBody e2>
+	'for ' e1 'do ' e2 = <operator 'for ' e1 'do ' > <processBody e2>
+	e1 '; ' e2 = <operator e1> <processBody e2>
 	e1 = e1
 	
-operator 
-	'for' e1 ':=' e2 'downto' e3 'do' = <for e1 (e2) e3>
-	'for' e1 ':=' e2 'to' e3 'do' = <for (e1) e2 (e3)>
-	e1 ':=' e2 = <assignment (e1) e2> ';\n'
-	'writeln(' e1 ')' = <print <list e1>> ';\n'
-	'rpt' = 'do'
-	'untl' e1 = 'while ( !' e1 ');\n'
+switch
+	(e2) e3 = 'switch(' e2 ')\n{\n' <switchList e3 (<cp 'var'<unspace e2>>)> '}\n'
 	
-	e1 = <prout '!!! ' e1 '\n'>
+switchList
+	e1 ' : ' '{' s(N)a e2 '}' sa e3 (e4) = 'case ' <eql e1 (e4)> ': { \n    ' <processBody e2> '}\n' <switchList e3 (e4)>
+	e1 ' : ' e2 ';' e3 (e4) = 'case ' <eql e1 (e4)> ' : ' <processBody e2 ';\n'> <switchList e3 (e4)>
+	e1 (e4) = e1
+	
+	
+eq
+	/0/ e1 (e1) = 
+	/0/ e1 (e2) = <printm '\n\nError! Const type mismatch\n\n'>
+	e1 (e2) = <eq /0/ <unspace e1> (<unspace e2>)>
+	e1 = <prout e1 '!!!'>	
+
+eql
+	e1 (e2) = e1 <eq <typeConst <printm e1>> (e2)>
+
+
+operator 
+	'for ' e1 ' := ' e2 ' downto ' e3 ' do ' = <for e1 (e2) e3>
+	'for ' e1 ' := ' e2 ' to ' e3 ' do ' = <for (e1) e2 (e3)>
+	e1 ' := ' e2 = <assignment (e1) e2> ';\n'
+	e(' ')9 'writeln (' e1 ')' = <print <list e1>> ';\n'
+	'rpt' = 'do'
+	'untl ' e1 = 'while ( !' e1 ');\n'
+	
+	e1 = <prout '!!!' e1 '!!!' '\n'>
 	
 for
 	(e1) e2 (e3) = 'for('<name e1> ' = ' <expression e2> '; ' e1 ' < ' <expression e3> '; ' e1 '++)\n    '
@@ -94,37 +130,39 @@ assignment
 	e1 = <prout 'expression error'>
 
 expression
-	e1 '=' e2 = <simpleExpr e1> ' == ' <simpleExpr e2>
-	e1 sa('><=') e2 = <simpleExpr e1> ' ' sa ' ' <simpleExpr e2>
-	e1  sa('><')sb('><=') e2 = <simpleExpr e1> ' ' sa sb ' ' <simpleExpr e2>
+	e1 ' = ' e2 = <simpleExpr e1> ' == ' <simpleExpr e2>
+	e1 sa(' ><= ') e2 = <simpleExpr e1> ' ' sa ' ' <simpleExpr e2>
+	e1  sa(' >< ')sb(' ><= ') e2 = <simpleExpr e1> ' ' sa sb ' ' <simpleExpr e2>
 	e1 = <simpleExpr e1>
 	
 simpleExpr
-	e1 '+' e2 = <summand e1> ' + ' <simpleExpr e2>
-	e1 '-' e2 = <summand e1> ' - ' <simpleExpr e2>
+	e1 ' + ' e2 = <summand e1> ' + ' <simpleExpr e2>
+	e1 ' - ' e2 = <summand e1> ' - ' <simpleExpr e2>
 	e1 = <summand e1>
 	
 summand
-	e1 '*' e2 = <factor e1> ' * ' <summand e2>
-	e1 'div' e2 = <factor e1> ' / ' <summand e2>
-	e1 'mod' e2 = <factor e1> ' % ' <summand e2>
-	e1 'and' e2 = <factor e1> ' && ' <summand e2>
+	e1 ' * ' e2 = <factor e1> ' * ' <summand e2>
+	e1 ' div ' e2 = <factor e1> ' / ' <summand e2>
+	e1 ' mod ' e2 = <factor e1> ' % ' <summand e2>
+	e1 ' and ' e2 = <factor e1> ' && ' <summand e2>
 	e1 = <factor e1>
 	
 factor 
 	v(D)1 = v1
+	e(' ')0 v(D)1 = v1
 	e1 = <nameOrConst e1>
 	
 nameOrConst
-	v(D)1 = v1
+	e(' ')0 v(D)1 e(' ')9 = v1
 	e1 = <checkName (<cp 'var' e1>) e1>
 	
 checkName
-	() e1 = <prout 'name error!' e1>
 	(v1) e2 = e2
+	() e1 = <prout 'name error!' '"'e1'"'>
+	
 	
 list
-	e1 ',' e2 = <typed e1> ',' <list e2>
+	e1 ', ' e2 = <typed e1> ', ' <list e2>
 	e1 = <typed e1>
 	
 typed 
@@ -134,8 +172,8 @@ print
 	e1 = 'printf("' <printTypesList e1> '"' <printVarList e1> ')'
 	
 printTypesList
-	e1 ',' e2 = <what e1> ', ' <printTypesList e2>
-	e1 = <what e1>
+	e1 ', ' e2 = <what e1> ', ' <printTypesList e2>
+	e1 =  <what e1>
 	
 what 
 	v(D)1 = v1
@@ -147,15 +185,15 @@ notEmpty
 	= <error>
 	
 printVarList
-	R e1 ',' e2 = <printVarList e1> <isVar e2> 
+	R e1 ', ' e2 = <printVarList e1> <isVar e2> 
 	e1 = <isVar e1>
 	
 isVar
-	v(D)1=
+	v(D)1 =
 	'"' v1 '"' =
 	''' v1 ''' =
-	v1 = ',' v1
-	e1 = e1
+	v1 = ',' <printm v1>
+	e1 = <printm e1>
 	
 	
 typeID
@@ -165,6 +203,7 @@ typeID
 	'char' = '%c'
 	
 reNameType 
+	' ' e1 = <reNameType e1>
 	'integer' = 'int'
 	'boolean' = 'bool'
 	'char' = 'char'
@@ -175,6 +214,11 @@ reNameType
 	'double' = 'double'
 	e1 = <prout 'type error' e1>
 	
+unspace
+	' ' e1 = <unspace e1>
+	e1 ' ' = <unspace e1>
+	e1 = e1
+
 error
 	= <prout 'error'>
 
