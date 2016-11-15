@@ -13,10 +13,18 @@ getFile
 	(e1) v2 = <getFile(e1 v2 '\n') <libget>>
 	(e1) = <deleter e1>
 	
+	
+	
+	
+	
 deleter
 	e1 '\n' e2 = <deleter e1 ' ' e2>
 	e1 ' ' ' ' e2 = <deleter e1 ' ' e2>
 	e1 = <begEnd e1 /0/>
+	
+	
+	
+	
 	
 begEnd
 	e1 'end;' e2 s(N)a = <begEnd <pairEnd e1 'end;' sa> e2 <p1 sa>>
@@ -42,14 +50,22 @@ begCase
 pairCase
 	R e1 'case ' e2 'of ' e3 'endcs;' s(N)a =  e1 'cs ' e2 'of{' sa e3 '}' sa 'endcs;'
 	
+	
+	
+	
+	
 program
 	'program ' e1 ';' e2 = 'int main() { \n'<const e2>
 	e1 = <error>
 	
+	
+	
+	
+	
 const 
-	e(' ')9 'const ' e1 '=' e2 ';' e3 = 'const ' <typeConst e2> ' ' e1 '='e2 <br 'const'<typeConst e2> e1 '=' e2> ';\n' <const /0/ e3>
+	e(' ')9 'const ' e1 '=' e2 ';' e3 = 'const ' <typeConst e2> ' ' e1 '='e2 <br 'const'<typeConst e2> <unspace e1> '=' <unspace e2>> ';\n' <const /0/ e3>
 	/0/ e(' ')9 'var' e1 = <var 'var' e1>
-	/0/ e1 '=' e2 ';' e3 = 'const ' <typeConst e2> ' ' e1 '=' e2 <br 'const'<typeConst e2> e1 '=' e2> ';\n' <const /0/ e3>
+	/0/ e1 '=' e2 ';' e3 = 'const ' <typeConst e2> ' ' e1 '=' e2 <br 'const'<typeConst e2> <unspace e1> '=' <unspace e2>> ';\n' <const /0/ e3>
 	e1 = <var e1>
 	
 typeConst
@@ -59,9 +75,10 @@ typeConst
 	/0/ e1 = <prout 'constTypeError "' e1 '"'>
 	e1 = <typeConst /0/ <unspace e1>>
 	
-	
-transformConst 
-	(e1) e2 = e1 ' = ' e2
+
+
+
+
 	
 var
 	e(' ')9 'var ' e1 ';' e2 = <section e1> <var e2>
@@ -76,18 +93,25 @@ section
 	
 variable 
 	(e1) e2 = <br 'var' <unspace e2>'='<reNameType <unspace e1>>> <reNameType <unspace e1>> ' ' e2 ';\n'
+	
+	
+	
+	
 
 body
 	'begin ' e1 'end.' e(' ')9 = <processBody e1> '};\n'
 	e1 = <prout 'body error!' e1 '\n\n\n'>
 	
 processBody 
-
 	'cs ' e2 'of{' s(N)a e3 '}' sa 'endcs;' e4 = <switch (e2) e3> <processBody e4>
 	'{' s(N)a v9 '}' sa e2 = '{\n' <processBody v9> '}\n' <processBody e2>
 	'for ' e1 'do ' e2 = <operator 'for ' e1 'do ' > <processBody e2>
 	e1 '; ' e2 = <operator e1> <processBody e2>
 	e1 = e1
+	
+	
+	
+	
 	
 switch
 	(e2) e3 = 'switch(' e2 ')\n{\n' <switchList e3 (<cp 'var'<unspace e2>>)> '}\n'
@@ -98,6 +122,8 @@ switchList
 	e1 (e4) = e1
 	
 	
+	
+	
 eq
 	/0/ e1 (e1) = 
 	/0/ e1 (e2) = <printm '\n\nError! Const type mismatch\n\n'>
@@ -106,6 +132,8 @@ eq
 
 eql
 	e1 (e2) = e1 <eq <typeConst <printm e1>> (e2)>
+	
+	
 
 
 operator 
