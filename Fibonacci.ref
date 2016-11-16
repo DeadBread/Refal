@@ -1,12 +1,17 @@
 	entry go
 	extrn first, last, lengw
-	extrn add, sub, mul, div, dr, card
+	extrn add, sub, mul, div, dr, card, br, cp, dg
 	extrn repeat(multe)
 	extrn inc(p1), dec(m1), textToNumber(cvb), numberToText(cvd)
 
-go = <unspace /0/>
+go = <do <card> >
 
-unspace
-	' ' e1 = <unspace e1>
-	e1 ' ' = <unspace e1>
-	e1 = e1
+do
+	e1 = <expression e1>
+	
+	
+expression
+	sa('>') = 'good'
+	e1 sa('><')sb(' ><= ') e2 = 'better'
+	e1 = 'FUCK'
+

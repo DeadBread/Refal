@@ -8,22 +8,40 @@ var i : integer;
     j : double;
 
 function next(k,p,d: integer; var t: integer): integer;
+  
+  var
+  i :integer;
+  j : double;
+  ttg : integer;
+  
   begin
-    next := k + 1
+    i := 1;
+    j := 2;
+    ttg := i + 4;
+    writeln(i + 4);
   end;
   
 procedure proc(k,p,d: integer; var t: integer);
   begin
-    next := k + 1
+    writeln("world");
   end;
 
 begin
   i := 1;
   j := 2 + 7 - 12;
   
+  if true then
+  begin
+  writeln("here");
+  end;
+  else 
+  begin
+  j := 9;
+  end;
+  
   repeat
   writeln ("asa");
-  until 55;
+  until i > j;
   
   writeln ("bread");
   
@@ -33,20 +51,12 @@ begin
   
   
   case i of
-        0 : 
-        begin
-        writeln ("ноль");
-        writeln ("один");
-        writeln ("два");
-        end;
-        3 : writeln ("три");
-        4 : writeln ("четыре");
-        5 : writeln ("пять");
-        6 : writeln ("шесть");
-        7 : writeln ("семь");
-        8 : writeln ("восемь");
-        9 : writeln ("девять");
-      endcase;
+0:writeln(0);
+1:writeln(1);
+2:writeln(2);
+3:writeln(3);
+4:writeln(4);
+endcase;
       
   writeln (i, j, "hwew");
   
