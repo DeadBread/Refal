@@ -1,13 +1,13 @@
 	entry go
 	extrn prout
 	extrn add, sub, p1, m1
-	extrn numb, card, opnget, libget, clsget
-	extrn functab, ftochar, chartof, printm
+	extrn numb, card, opnget, libget, libput, clsget, opnput, clsput
+	extrn functab, ftochar, chartof, printm, proutm
 	extrn br, dg, cp, dgall
 
 	empty begin, end, procedure, function, type, fullend, while
 
-go = <opnget 'file.txt'> <prout <program <getFile () <libget>>>> <clsget> 
+go = <opnget 'file.txt'> <opnput 'output.c'> <prout <program <getFile () <libget>>>> <clsget> <clsput>
 
 getFile 
 	(e1) v2 = <getFile(e1 v2 '\n') <libget>>
@@ -19,7 +19,7 @@ getFile
 	
 deleter
 	e1 '\n' e2 = <deleter e1 ' ' e2>
-	e1 ' ' ' ' e2 = <deleter e1 ' ' e2>
+	e1 '  ' e2 = <deleter e1 ' ' e2>
 	e1 = <begEnd e1>
 	
 	
@@ -44,19 +44,51 @@ pairUntil
 	
 begCase
 	e1 'endcase;' e2 = <begCase <pairCase e1 'endcs;' > e2 >
-	e1 = <printm e1> <prout '\n\n\n'>
+	e1 = <PPcut <printm e1>> <prout '\n\n\n'>
 	
 pairCase
 	R e1 'case ' e2 'of ' e3 'endcs;' =  e1 'cs ' e2 'of' ( e3 ) 'endcs;'
 	
-	
+PPcut
+	e1 'function ' e2 ';' e3 ( e4 ) e5 = 'function ' e2 ';' e3 ( e4 ) <PPcut e1 e5>
+	e1 'procedure ' e2 ';' e3 ( e4 ) e5 = 'procedure ' e2 ';' e3 ( e4 ) <PPcut e1 e5>
+	e1 = e1
 	
 	
 	
 program
-	'program ' e1 ';' e2 = 'int main() { \n'<const e2>
+	e0 'program ' e1 ';' e2 = <subPr e0> '\n' 'int main() { \n'<const e2>
 	e1 = <error>
 	
+subPr
+	e(' ')9 'function ' e2 '(' e6 ')' e7';' e3 ( e4 ) e5 = <funcHead e2 '(' e6 ')' e7';'> <PPBody e3 (e4)> <subPr e5>
+	e(' ')9 'procedure ' e2 '(' e6 ')' e(' ')8 ';' e3 ( e4 ) e5 = <procHead e2 '(' e6 ');'> <PPBody e3 (e4)> <subPr e5>
+	e1 = e1
+	
+procHead
+	e1 '(' e2 ')' e(' ')8';' = 'void ' e1 '(' <argList (<unspace e1>) e2> ');\n'
+	
+funcHead
+	e1 '(' e2 ')' e(' ')8 ':' e(' ')7 e3 ';' = <reNameType e3> ' ' e1 '(' <argList (<unspace e1>) e2> ');\n'
+	
+argList
+	(en) e(' ')9 'var ' e1 ':' e2 ';' e3 = <oneTypeList (en) ('var') e1 (e2)> ', ' <argList (en) e3>
+	(en) e(' ')9 'var ' e1 ':' e2 = <oneTypeList (en) ('var') e1 (e2)>
+	(en) e1 ':' e2 ';' e3 = <oneTypeList (en) e1 (e2)> ', ' <argList (en) <printm e3>>
+	(en) e1 ':' e2 = <oneTypeList (en) e1 (e2)>
+	(en) e1 = <prout 'warning! ' e1>
+	
+oneTypeList
+	(en) ('var') e1 ',' e2 (e3) = <oneVar (en) ('var') <unspace e1> (<reNameType e3>)> ', ' <oneTypeList (en) ('var') e2 (e3)>
+	(en) e1 ',' e2 (e3) = <oneVar (en) <unspace e1> (<reNameType e3>)> ', ' <oneTypeList (en) e2 (e3)>
+	(en) e1 (e3) = <oneVar (en) <unspace e1> (<reNameType e3>)>
+	
+oneVar
+	(en) ('var') e1 (e2) = e2 ' *' e1 <br <unspace en>':var'e1 '=' e2'*'>
+	(en) e1 (e2) = e2 ' ' e1 <br <unspace en>':var'e1 '=' e2>
+	
+PPBody
+	e1 = e1
 	
 	
 	
@@ -93,9 +125,6 @@ section
 variable 
 	(e1) e2 = <br 'var' <unspace e2>'='<reNameType <unspace e1>>> <reNameType <unspace e1>> ' ' e2 ';\n'
 	
-	
-	
-	
 
 body
 	'begin ' e1 'end.' e(' ')9 = <processBody /1/ e1> '};\n'
@@ -106,11 +135,11 @@ processBody
 	s(N)w ( v9 ) e2 = '\n' <white sw> '{\n' <processBody <p1 sw> v9> <white sw> '}\n' <processBody sw e2>
 	s(N)w e(' ')9 'for ' e1 'do ' e2 = <white sw> <operator 'for ' e1 'do ' > <processBody sw e2>
 	s(N)w e1 ';' e(' ')9 e2 = <white sw> <operator <unspace e1>> <processBody sw e2>
-	s(N)w e1 = e1
+	s(N)w e1 = 
 	
 	
 white
-	/0/ = ''
+	/0/ = 
 	s(N)a = '     '<white <m1 sa>>
 	
 	
@@ -140,7 +169,7 @@ eql
 operator 
 	'for ' e1 ':=' e2 'downto ' e3 'do ' = <for <unspace e1> (<unspace e2>) <unspace e3>>
 	'for ' e1 ':=' e2 'to ' e3 'do ' = <for ( <unspace e1> ) <unspace e2> (<unspace e3>)>
-	e1 ':=' e2 = <assignment ( <unspace e1> ) <unspace e2>> ';\n'
+	e1 ':=' e2 = <printm <assignment ( <unspace e1> ) <unspace e2>> ';\n'>
 	e(' ')9 'writeln' e(' ')8 '(' e1 ')' = <print <list <unspace e1>>> ';\n'
 	'rpt' = 'do'
 	'untl ' e1 = 'while ( !' e1 ');\n'

@@ -70,5 +70,7 @@ proutFileLines
 	
 error 
 	= <prout 'error!'>
-
+	
+	
+e(' ')9 'function ' e1 ';' e4 (e5) e6 = <funcHead 'function ' e1 ';'> <var e4> (<processBody e5>)
 
