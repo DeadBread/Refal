@@ -7,7 +7,7 @@
 
 	empty begin, end, procedure, function, type, fullend, while
 
-go = <opnget <card> > <opnput 'output.c'> <proutm <program <getFile () <libget>>>> <clsget> <clsput>
+go = <opnget <card 'enter file name'> > <opnput 'output.c'> <proutm <program <getFile () <libget>>>> <clsget> <clsput>
 
 getFile 
 	(e1) v2 = <getFile(e1 v2 '\n') <libget>>
@@ -35,7 +35,7 @@ pairEnd
 	e1 = <prout 'error end!' e1>
 	
 begRepeat
-	e1 'until ' e2 ';' e3 = <begRepeat <pairUntil e1 'until '> e2 ';' e3>
+	e1 'until ' e2 ';' e3 = <begRepeat <pairUntil e1 'until '> e2 ';' <white /1/> e3>
 	e1 = <begCase e1>
 	
 pairUntil
@@ -51,7 +51,7 @@ pairCase
 	
 begIf
 	e1 'else ' e2 = <begIf <pairIf e1 'else '> e2>
-	e1 = <PPcut <printm e1>>
+	e1 = <PPcut e1>
 	
 pairIf
 	R e1 'if ' e2 'else ' = <helpIf e1 'iff ' e2 'els '>
@@ -158,13 +158,14 @@ body
 	
 processBody 
 	s(N)w e(' ')9 'cs ' e2 'of' ( e3 ) 'endcs;' e4 = <white sw> <switch sw (e2) e3> <processBody sw e4>
-	s(N)w e(' ')9 ( v8 ) e2 = <white sw> '{\n' <processBody <p1 sw> <printm v8>> <white sw> '}\n' <processBody sw e2>
+	s(N)w e(' ')9 ( v8 ) e2 = <white sw> '{\n' <processBody <p1 sw> v8> <white sw> '}\n' <processBody sw e2>
 	s(N)w e(' ')9 'for ' e1 'do ' e2 = <white sw> <operator 'for ' e1 'do ' > <processBody sw <white /1/> e2>
-	s(N)w e(' ')9 'iff ' e1 'then '(e2) e3 = <white sw> <operator 'if ' e1 'then'> <processBody <p1 sw> e2> <processBody sw e3>
+	s(N)w e(' ')9 'iff ' e1 'then '(e2) e3 = <white sw> <operator 'if ' e1 'then'> <processBody sw <white /1/> e2> <processBody sw e3>
 	s(N)w e(' ')9 'if ' e1 'then ' e2 = <white sw> <operator 'if ' e1 'then'> <processBody sw e2>
-	s(N)w e(' ')9 'while ' e1 'do ' e2 = <white sw> <operator 'while ' e1 'do'> <processBody sw <white /1/> e2>
+	s(N)w e(' ')9 'while ' e1 'do ' e2 = <white sw> <operator 'while ' e1 'do'> <processBody <printm sw <white /1/> e2>>
 	s(N)w e(' ')9 'els ' e1 = <white sw> 'else \n' <processBody sw <white /1/> e1>
 	s(N)w e(' ')9 'else ' e1 = <white sw> 'else \n' <processBody sw <white /1/> e1>
+	s(N)w '    ' e1 ';' e2 = <white <p1 sw>> <operator <unspace e1>> <processBody sw e2>
 	s(N)w e1 ';' e2 = <white sw> <operator <unspace e1>> <processBody sw e2>
 	s(N)w ' ' = 
 	s(N)w '\n' = 
@@ -173,7 +174,7 @@ processBody
 	
 white
 	/0/ = 
-	s(N)a = '   '<white <m1 sa>>
+	s(N)a = '    '<white <m1 sa>>
 	
 	
 switch
@@ -202,19 +203,18 @@ eql
 operator 
 	'for ' e1 ':=' e2 'downto ' e3 'do ' = <for <unspace e1> (<unspace e2>) <unspace e3>>
 	'for ' e1 ':=' e2 'to ' e3 'do ' = <for ( <unspace e1> ) <unspace e2> (<unspace e3>)>
-	'if ' e1 'then' = <prout 'here'> 'if (' <expression <printm e1>> ')\n'
+	'if ' e1 'then' = 'if (' <expression e1> ')\n'
 	'while ' e1 'do' = 'while (' <expression e1> ')\n'
 	'rpt' = 'do\n'
 	'untl ' e1 = 'while ( ! ('<expression e1>'));\n'
 	e1 ':=' e2 = <assignment ( <unspace e1> ) <unspace e2>> ';\n'
-	'write' e(' ')8 '(' e1 ')' = <print <list <unspace e1>>> ';\n'
-	'writeln' e(' ')8 '(' e1 ')' = <print <list <unspace e1>>> ';\n'
-	
+	'write' e(' ')8 '(' e1 ')' = <print <unspace e1>> ';\n'
+	'writeln' e(' ')8 '(' e1 ')' = <print <unspace e1>> ';\n'
 	e1 = <prout '!!!' e1 '!!!' '\n'>
 	
 for
-	(e1) e2 (e3) = 'for('<name e1> ' = ' <expression e2> '; ' e1 ' < ' <expression e3> '; ' e1 '++)\n    '
-	e1 (e2) e3 = 'for('<name e1> ' = ' <expression e2> '; ' e1 ' > ' <expression e3> '; ' e1 '--)\n    '
+	(e1) e2 (e3) = 'for('<name e1> ' = ' <expression e2> '; ' e1 ' < ' <expression e3> '; ' e1 '++)\n'
+	e1 (e2) e3 = 'for('<name e1> ' = ' <expression e2> '; ' e1 ' > ' <expression e3> '; ' e1 '--)\n'
 	
 name 
 	e1 = <checkName (<cp 'var' e1>) e1>
@@ -224,9 +224,10 @@ assignment
 	e1 = <prout 'expression error'>
 
 expression
-	e(('()'))1 s('><')a s('><=')b e2 = <simpleExpr <unspace e1>> ' ' sa sb ' ' <simpleExpr <unspace e2>>
-	e(('()'))1 s('><')a e2 = <simpleExpr <unspace e1>> ' ' sa ' ' <simpleExpr <unspace e2>>
-	e(('()'))1 '=' e2 = <simpleExpr <unspace e1>> ' == ' <simpleExpr <unspace e2>>
+	e(' ')9 '(' e1 ')' e(' ')8 = '(' <expression e1 > ')'
+	e1 s('><')a s('><=')b e2 = <simpleExpr <unspace e1>> ' ' sa sb ' ' <simpleExpr <unspace e2>>
+	e1 s('><')a e2 = <simpleExpr <unspace e1>> ' ' sa ' ' <simpleExpr <unspace e2>>
+	e1 '=' e2 = <simpleExpr <unspace e1>> ' == ' <simpleExpr <unspace e2>>
 	e1 = <simpleExpr <unspace e1>>
 	
 simpleExpr
@@ -256,14 +257,6 @@ nameOrConst
 checkName
 	(v1) e2 = <unspace e2>
 	() e1 = <prout 'name error!' '"'e1'"'>
-	
-	
-list
-	e1 ', ' e2 = <typed e1> ', ' <list e2>
-	e1 = <typed e1>
-	
-typed 
-	e1 = e1
 	
 print
 	e1 = 'printf("' <printTypesList e1> '"' <printVarList e1> ')'

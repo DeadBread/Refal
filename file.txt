@@ -17,7 +17,6 @@ function next(k,p,d: integer; var t: integer): integer;
   begin
     i := 1;
     j := 2;
-    ttg := i + 4;
     writeln(i + 4);
   end;
   
@@ -31,21 +30,20 @@ begin
   j := 2 + 7 - 12;
   
   if true then
-  begin
   writeln("here");
-  end;
   else 
-  begin
   j := 9;
-  end;
   
   repeat
-  writeln ("asa");
+  writeln ("word");
   until i > j;
   
   writeln ("bread");
   
-  for i := 2 to 10 do i := i + 1;
+  for i := 2 to 10 do 
+  begin
+  i := i + 1;
+  end;
     
   for i := 20 downto 10 do i := i + 1;
   

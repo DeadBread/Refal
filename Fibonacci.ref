@@ -11,7 +11,7 @@ do
 	
 	
 expression
-	sa('>') = 'good'
-	e1 sa('><')sb(' ><= ') e2 = 'better'
+	s('>')a = 'good'
+	e1 s('><')a s('><=')b e2 = 'better'
 	e1 = 'FUCK'
 
