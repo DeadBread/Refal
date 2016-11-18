@@ -190,7 +190,7 @@ switchList
 	
 eq
 	/0/ e1 (e1) = 
-	/0/ e1 (e2) = <printm '\n\nError! Const type mismatch - ' e1 e2 '\n\n'>
+	/0/ e1 (e2) = '\n\nError! Const type mismatch - ' e1 e2 '\n\n'
 	e1 (e2) = <eq /0/ <unspace e1> (<unspace e2>)>
 	e1 = <prout e1 '!!!'>	
 
@@ -226,7 +226,9 @@ procList
 	e1 (e2) = <checkPair <unspace e1> (e2)>
 	
 checkPair
-	e1 (e2) = <eq <getType e1> (e2)> e1
+	() e1 (e2) = e1
+	(v0) e1 (e2) = <eq <getType e1>'*' (e2)> '&'e1
+	e1 (e2) = <checkPair (<eq <getType e1> (e2)>) e1 (e2)>
 	
 getType
 	() e1 = <typeConst e1>

@@ -7,7 +7,7 @@ const
 var i : integer; 
     j : double;
 
-function next(k,p,d: integer): integer;
+function next(k,p,d: integer; var i:integer): integer;
   
   var
   i :integer;
@@ -30,7 +30,7 @@ begin
   
   proc(1,2,3);
   
-  i := next(1,2,3);
+  i := next(1,2,3, i);
 
   i := 1;
   j := 2 + 7 - 12;
