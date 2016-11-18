@@ -1,0 +1,16 @@
+program abc;
+var 
+x, y, m, n : integer;
+function MaxNumber(a, b : integer) : integer;
+var max : integer;
+begin 
+if a>b then max := a else max := b;
+MaxNumber := max;
+end;
+begin 
+write(10);
+x := 8;
+y := 9;
+m := MaxNumber(x, y);
+n := MaxNumber(2, x+y);
+end.

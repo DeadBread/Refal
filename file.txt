@@ -10,7 +10,6 @@ var i : integer;
 function next(k,p,d: integer; var i:integer): integer;
   
   var
-  i :integer;
   j : double;
   ttg : integer;
   

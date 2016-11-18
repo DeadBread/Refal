@@ -1,0 +1,10 @@
+program vetvlenija7;
+var NUM, a : integer;
+begin 
+writeln(17);
+NUM := 3;
+for NUM:=1 to 7 do 
+begin 
+a := 9;
+end;
+end.

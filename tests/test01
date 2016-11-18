@@ -1,0 +1,9 @@
+program abc;
+var 
+c : integer;
+begin 
+repeat 
+c := 1;
+c := 2;
+until c<3;
+end.

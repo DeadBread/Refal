@@ -1,0 +1,15 @@
+program Stepen_chisla;
+const 
+b=7;
+var 
+a : integer;
+begin 
+a := 8;
+if a then 
+if true then 
+a := 7;
+else 
+a := 9;
+else 
+a := 5;
+end.

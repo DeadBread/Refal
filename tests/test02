@@ -1,0 +1,20 @@
+program Stepen_chisla;
+var 
+z, a : boolean;
+M : integer;
+I : integer;
+Y : integer;
+begin 
+I := 1;
+Y := 1;
+M := 3;
+z := true;
+while I<=M do 
+begin 
+Y := Y*Y;
+I := I+1;
+end;
+writeln(1);
+a := a;
+writeln(a+z);
+end.

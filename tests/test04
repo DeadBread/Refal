@@ -1,0 +1,13 @@
+program vetvlenija7;
+var NUM : integer;
+begin 
+writeln(17);
+NUM := 3;
+case NUM of 
+0:writeln(0);
+1:writeln(1);
+2:writeln(2);
+3:writeln(3);
+4:writeln(4);
+endcase;
+end.

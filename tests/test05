@@ -1,0 +1,17 @@
+program Program2_Lesson5;
+var 
+YN : boolean;
+begin 
+YN := true;
+case YN of 
+0:YN := false;
+1:begin 
+writeln(19);
+YN := 9;
+end;
+7:begin 
+writeln(4);
+writeln(5);
+end;
+endcase;
+end.

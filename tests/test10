@@ -1,0 +1,41 @@
+program pass;
+const t=3;r=7;
+var a, b : integer;
+c : boolean;
+procedure numb1(y, x : integer;i : integer);
+var d : boolean;
+begin 
+i := i+1;
+d := 7;
+if (d) then 
+if x<y then i := i-1 
+else writeln(d) 
+else writeln(i);
+end;
+
+function num2(k : integer) : integer;
+begin 
+numb1(k, k, k);
+repeat 
+k := k+1;
+k := k+1;
+k := k+1;
+until true;
+end;
+
+begin 
+a := 12;
+b := 13;
+c := a+b;
+while c>b do 
+begin 
+writeln(b);
+c := c-1;
+case a of 
+1 : writeln(1);
+2 : writeln(2);
+3 : writeln(3);
+4 : begin writeln(4);if c=4 then a := r else a := t;end;
+endcase;
+end;
+end.

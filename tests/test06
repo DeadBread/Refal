@@ -1,0 +1,10 @@
+program Lesson6_Program3;
+var n1 : integer;
+begin 
+writeln(18);
+repeat 
+write(3);
+n1 := 7;
+if not (n1 =0) then n1 := 0; else n1 := 9;
+until not (n1 = 0);
+end.

@@ -1,0 +1,14 @@
+program abc;
+var 
+x, y, m, n : integer;
+procedure MaxNumber(a, b : integer;var max : integer);
+var 
+c : boolean;
+begin 
+if a>b then max := a else max := b;
+end;
+begin 
+write(7);
+MaxNumber(7, 7, 7);
+writeln(true);
+end.
