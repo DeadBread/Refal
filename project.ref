@@ -210,7 +210,7 @@ operator
 	e1 ':=' e2 = <assignment ( <unspace e1> ) <unspace e2>> ';\n'
 	'write' e(' ')8 '(' e1 ')' = <print <unspace e1>> ';\n'
 	'writeln' e(' ')8 '(' e1 ')' = <print <unspace e1>> ';\n'
-	e1 '(' e2 ')' = <procCall e1 (e2)>
+	v1 '(' e2 ')' = <procCall v1 (e2)>
 	e1 = <prout '!!!' e1 '!!!' '\n'>
 	
 procCall
@@ -246,11 +246,22 @@ assignment
 	e1 = <prout 'expression error'>
 
 expression
+	e(' ')9 s(L)1 v(LD)2 '(' e3 ')' = <funCall <unspace s1 v2> (<unspace e3>)>
 	e(' ')9 '(' e1 ')' e(' ')8 = '(' <expression e1 > ')'
 	e1 s('><')a s('><=')b e2 = <simpleExpr <unspace e1>> ' ' sa sb ' ' <simpleExpr <unspace e2>>
 	e1 s('><')a e2 = <simpleExpr <unspace e1>> ' ' sa ' ' <simpleExpr <unspace e2>>
 	e1 '=' e2 = <simpleExpr <unspace e1>> ' == ' <simpleExpr <unspace e2>>
 	e1 = <simpleExpr <unspace e1>>
+	
+funCall
+	e1 (e2) = <checkFunc e1> '('<funcList e2 (<cp 'func'e1>)> ')'
+
+checkFunc
+	e1 = <checkname (<cp 'func' e1>) e1>
+	
+funcList
+	e1 (e2 ',' e3) = <procList e1 (e3)>
+
 	
 simpleExpr
 	e1 '+' e2 = <summand e1> ' + ' <simpleExpr e2>
