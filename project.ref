@@ -81,7 +81,7 @@ procHead
 	
 funcHead
 	e1 '(' e2 ')' e(' ')8 ':' e(' ')7 e3 ';' = <reNameType e3> ' ' e1 '(' <argList (<unspace e1>) e2> ')\n' +
-				<br 'func'<reNameType e3>e1 '=' <typeList <argList (<unspace e1>) e2>>>
+				<br 'func'e1 '=' <reNameType e3>',' <typeList <argList (<unspace e1>) e2>>>
 	
 argList
 	(en) e(' ')9 'var ' e1 ':' e2 ';' e3 = <oneTypeList (en) ('var') e1 (e2)> ', ' <argList (en) e3>
@@ -190,7 +190,7 @@ switchList
 	
 eq
 	/0/ e1 (e1) = 
-	/0/ e1 (e2) = <printm '\n\nError! Const type mismatch\n\n'>
+	/0/ e1 (e2) = <printm '\n\nError! Const type mismatch - ' e1 e2 '\n\n'>
 	e1 (e2) = <eq /0/ <unspace e1> (<unspace e2>)>
 	e1 = <prout e1 '!!!'>	
 
@@ -210,7 +210,29 @@ operator
 	e1 ':=' e2 = <assignment ( <unspace e1> ) <unspace e2>> ';\n'
 	'write' e(' ')8 '(' e1 ')' = <print <unspace e1>> ';\n'
 	'writeln' e(' ')8 '(' e1 ')' = <print <unspace e1>> ';\n'
+	e1 '(' e2 ')' = <procCall e1 (e2)>
 	e1 = <prout '!!!' e1 '!!!' '\n'>
+	
+procCall
+	e1 (e2) = <checkProc e1> '('<procList e2 (<cp 'proc'e1>)> ');\n'
+
+checkProc
+	e1 = <checkname (<cp 'proc'<unspace e1>>) e1>
+
+procList 
+	e1 ',' e2 (e3 ',' e4) = <checkPair <unspace e1> (e3)> ', ' <procList e2 (e4)>
+	e1 ',' e2 (e3) = <printm 'error! parameters count mismatch'>
+	e1 (e2 ',' e3) = <printm 'error! parameters count mismatch'>
+	e1 (e2) = <checkPair <unspace e1> (e2)>
+	
+checkPair
+	e1 (e2) = <eq <getType e1> (e2)> e1
+	
+getType
+	() e1 = <typeConst e1>
+	(e1) e2 = e1
+	e1 = <getType (<cp 'var' e1>) e1 >
+	
 	
 for
 	(e1) e2 (e3) = 'for('<name e1> ' = ' <expression e2> '; ' e1 ' < ' <expression e3> '; ' e1 '++)\n'
@@ -271,9 +293,9 @@ printTypesList
 what 
 	v(D)1 = v1
 	'"' v1 '"' = v1 
-	e1 = <typeID<notEmpty <cp 'var'e1>>>
+	e1 = <typeID<typeToPrint <cp 'var'e1>>>
 	
-notEmpty
+typeToPrint
 	v1 = v1
 	= 'int'
 	

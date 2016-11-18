@@ -20,12 +20,16 @@ function next(k,p,d: integer; var t: integer): integer;
     writeln(i + 4);
   end;
   
-procedure proc(k,p,d: integer; var t: integer);
+procedure proc(k,p,d: integer);
   begin
     writeln("world");
   end;
 
 begin
+
+  
+  proc(1,2,3);
+
   i := 1;
   j := 2 + 7 - 12;
   
