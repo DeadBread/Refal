@@ -77,11 +77,11 @@ subPr
 	
 procHead
 	e1 '(' e2 ')' e(' ')8';' = 'void ' e1 '(' <argList (<unspace e1>) e2> ')\n' + 
-				<br 'proc'e1 '=' <typeList <argList (<unspace e1>) e2>>>
+				<br 'status' '=' <unspace e1>> <br 'proc'e1 '=' <typeList <argList (<unspace e1>) e2>>>
 	
 funcHead
 	e1 '(' e2 ')' e(' ')8 ':' e(' ')7 e3 ';' = <reNameType e3> ' ' e1 '(' <argList (<unspace e1>) e2> ')\n' +
-				<br 'func'e1 '=' <reNameType e3>',' <typeList <argList (<unspace e1>) e2>>>
+				<br 'status' '=' <unspace e1>> <br 'func'e1 '=' <reNameType e3>',' <typeList <argList (<unspace e1>) e2>>>
 	
 argList
 	(en) e(' ')9 'var ' e1 ':' e2 ';' e3 = <oneTypeList (en) ('var') e1 (e2)> ', ' <argList (en) e3>
@@ -227,13 +227,22 @@ procList
 	
 checkPair
 	() e1 (e2) = e1
-	(v0) e1 (e2) = <eq <getType e1>'*' (e2)> '&'<isName e1>
+	(v0) e1 (e2) = <isBad (<eq <getType e1>'*' (e2)>) '&'<isName e1> (e1) (e2)>
 	e1 (e2) = <checkPair (<eq <getType e1> (e2)>) e1 (e2)>
 	
 isName
 	() e1 = 'error! Not constant instead of variable'
 	(e1) e2 = e2
 	e1 = <isName (<cp 'var'<unspace e1>>) e1>
+	
+isBad
+	() '&'e1 (e2) (e1) = e1
+	() '&'e1 (e2) (e3) = <prout 'pointer error'>
+	(v0) e1 (e2) ('int') = <expression <unspace e2>> <prout 'very Hear' '"' <unspace e2> '"'>
+	(v0) e1 (e2) ('bool') = <expression <unspace e2>>
+	e1 = 'Bad argument'
+	
+
 	
 getType
 	() e1 = <typeConst e1>
@@ -249,8 +258,17 @@ name
 	e1 = <checkName (<cp 'var' e1>) e1>
 	
 assignment
-	(e1) e2 = <name <unspace e1>> ' = ' <expression e2>
-	e1 = <prout 'expression error'>
+	(e1) e2 = <softName <name <unspace e1>> (<unspace e1>)> <expression e2>
+	e1 = <prout 'assignment error'>
+	
+softName 
+	e1 (e1) = e1 ' = '
+	e2 (e1) = <prout 'been'> <isReturn e1 (<cp 'status'>)>
+	
+isReturn
+	e1 (e1) = 'return '
+	e1 (e2) = <prout 'assignment error' e1 ' ' e2>
+	
 
 expression 
 	e1 = <expr<deBrace e1>>
@@ -265,7 +283,7 @@ Brace
 
 expr
 	e(' ')9 'not' e(' ')8 (e1) = <factor 'not' (e1)>
-	e(' ')9 s(L)1 v(LD)2 ( e3 ) = <funCall <unspace s1 v2> (<unspace e3>)>
+	e(' ')9 s(L)1 v(LD)2 ( e3 ) = <prout 'here'> <funCall <unspace s1 v2> (<unspace e3>)>
 	e1 s('><')a s('><=')b e2 = <simpleExpr <unspace e1>> ' ' sa sb ' ' <simpleExpr <unspace e2>>
 	e1 s('><')a e2 = <simpleExpr <unspace e1>> ' ' sa ' ' <simpleExpr <unspace e2>>
 	e1 '=' e2 = <simpleExpr <unspace e1>> ' == ' <simpleExpr <unspace e2>>
@@ -311,7 +329,7 @@ checkName
 	/0/ (v1) e2 = <unspace e2>
 	/0/ () e1 = <prout 'name error!' '"'e1'"'>
 	(v1) e2 = <unspace e2>
-	() e1 = <prout 'name error!' '"'e1'"'>
+	() e1 = <printm 'name error!' '"'e1'"'>
 	
 print
 	e1 = 'printf("' <printTypesList e1> '"' <printVarList e1> ')'
