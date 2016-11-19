@@ -161,13 +161,13 @@ processBody
 	s(N)w e(' ')9 ( v8 ) e2 = <white sw> '{\n' <processBody <p1 sw> v8> <white sw> '}\n' <processBody sw e2>
 	s(N)w e(' ')9 'for ' e1 'do ' e2 = <white sw> <operator 'for ' e1 'do ' > <processBody sw <white /1/> e2>
 	s(N)w e(' ')9 'iff ' e1 'then '(e2) e3 = <white sw> <operator 'if ' e1 'then'> <processBody sw <white /1/> e2> <processBody sw e3>
-	s(N)w e(' ')9 'if ' e1 'then ' e2 = <white sw> <operator 'if ' e1 'then'> <processBody sw e2>
+	s(N)w e(' ')9 'if ' e1 'then ' e2 = <white sw> <operator 'if ' e1 'then'> <processBody sw <white /1/> e2>
 	s(N)w e(' ')9 'while ' e1 'do ' e2 = <white sw> <operator 'while ' e1 'do'> <processBody <printm sw <white /1/> e2>>
 	s(N)w e(' ')9 'els ' e1 = <white sw> 'else \n' <processBody sw <white /1/> e1>
 	s(N)w e(' ')9 'else ' e1 = <white sw> 'else \n' <processBody sw <white /1/> e1>
 	s(N)w '    ' e1 ';' e2 = <white <p1 sw>> <operator <unspace e1>> <processBody sw e2>
 	s(N)w e1 ';' e2 = <white sw> <operator <unspace e1>> <processBody sw e2>
-	s(N)w ' ' = 
+	s(N)w e(' ')1 = 
 	s(N)w '\n' = 
 	s(N)w e1 = <prout 'reason!' '"' e1 '"'>
 	
@@ -227,8 +227,13 @@ procList
 	
 checkPair
 	() e1 (e2) = e1
-	(v0) e1 (e2) = <eq <getType e1>'*' (e2)> '&'e1
+	(v0) e1 (e2) = <eq <getType e1>'*' (e2)> '&'<isName e1>
 	e1 (e2) = <checkPair (<eq <getType e1> (e2)>) e1 (e2)>
+	
+isName
+	() e1 = 'error! Not constant instead of variable'
+	(e1) e2 = e2
+	e1 = <isName (<cp 'var'<unspace e1>>) e1>
 	
 getType
 	() e1 = <typeConst e1>
@@ -247,9 +252,20 @@ assignment
 	(e1) e2 = <name <unspace e1>> ' = ' <expression e2>
 	e1 = <prout 'expression error'>
 
-expression
-	e(' ')9 s(L)1 v(LD)2 '(' e3 ')' = <funCall <unspace s1 v2> (<unspace e3>)>
-	e(' ')9 '(' e1 ')' e(' ')8 = '(' <expression e1 > ')'
+expression 
+	e1 = <expr<deBrace e1>>
+	
+deBrace
+	e1 ')' e2 = <deBrace <Brace e1 ')'> e2>
+	e1 = e1
+
+Brace
+	e1 '(' e2 ')' = e1 (e2)
+	e1 = <prout 'brace error'>
+
+expr
+	e(' ')9 'not' e(' ')8 (e1) = <factor 'not' (e1)>
+	e(' ')9 s(L)1 v(LD)2 ( e3 ) = <funCall <unspace s1 v2> (<unspace e3>)>
 	e1 s('><')a s('><=')b e2 = <simpleExpr <unspace e1>> ' ' sa sb ' ' <simpleExpr <unspace e2>>
 	e1 s('><')a e2 = <simpleExpr <unspace e1>> ' ' sa ' ' <simpleExpr <unspace e2>>
 	e1 '=' e2 = <simpleExpr <unspace e1>> ' == ' <simpleExpr <unspace e2>>
@@ -279,7 +295,7 @@ summand
 	
 factor 
 	e(' ')0 v(D)1 = v1
-	e(' ')0 '(' e1 ')' e(' ')9 = '(' <expression e1> ')'
+	e(' ')0 ( e1 ) e(' ')9 = '(' <expression e1> ')'
 	e(' ')0 'not' e1 = '!' <factor e1>
 	e1 = <nameOrConst e1>
 	
