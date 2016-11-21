@@ -39,7 +39,7 @@ begRepeat
 	e1 = <begCase e1>
 	
 pairUntil
-	R e1 'repeat ' e2 'until ' e3 = e1 'rpt;' ( e2 ) 'untl ' e3
+	R e1 'repeat ' e2 'until ' e3 = e1 'rpt' ( e2 ) 'untl ' e3
 	e1 = <br /error/ '=' (<printm 'error - unpaired "until!"' e1>)>
 	
 begCase
@@ -165,13 +165,14 @@ processBody
 	s(N)w e(' ')9 'cs ' e2 'of' ( e3 ) 'endcs;' e4 = <white sw> <switch sw (e2) e3> <processBody sw e4>
 	s(N)w e(' ')9 ( v8 ) e2 = <white sw> '{\n' <processBody <p1 sw> v8> <white sw> '}\n' <processBody sw e2>
 	s(N)w e(' ')9 'for ' e1 'do ' e2 = <white sw> <operator 'for ' e1 'do ' > <processBody sw <white /1/> e2>
+	s(N)w e(' ')9 'rpt' ( e1 ) 'untl ' e2 ';' e3 = <white sw> 'do\n' <processBody <p1 sw> e1> <white sw> 'while ( ! ('<expression e2>'));\n' <processBody sw e3>
 	s(N)w e(' ')9 'iff ' e1 'then '(e2) e3 = <white sw> <operator 'if ' e1 'then'> <processBody sw <white /1/> e2> <processBody sw e3>
 	s(N)w e(' ')9 'if ' e1 'then ' e2 = <white sw> <operator 'if ' e1 'then'> <processBody sw <white /1/> e2>
 	s(N)w e(' ')9 'while ' e1 'do ' e2 = <white sw> <operator 'while ' e1 'do'> <processBody <printm sw <white /1/> e2>>
 	s(N)w e(' ')9 'els ' e1 = <white sw> 'else \n' <processBody sw <white /1/> e1>
 	s(N)w e(' ')9 'else ' e1 = <white sw> 'else \n' <processBody sw <white /1/> e1>
-	s(N)w '    ' e1 ';' e2 = <white <p1 sw>> <operator <unspace e1>> <processBody sw e2>
-	s(N)w e1 ';' e2 = <white sw> <operator <unspace e1>> <processBody sw e2>
+	s(N)w '    ' s((' '))0 e1 ';' e2 = <white <p1 sw>> <operator <unspace s0 e1>> <processBody sw e2>
+	s(N)w e1 ';' e2 = <white sw> <operator <unspace <printm e1>>> <processBody sw e2>
 	s(N)w e(' ')1 = 
 	s(N)w '\n' = 
 	s(N)w e1 = <br /error/ '=' (<printm 'error - unexpected operator or sequence"'>)>
@@ -210,8 +211,6 @@ operator
 	'for ' e1 ':=' e2 'to ' e3 'do ' = <for ( <unspace e1> ) <unspace e2> (<unspace e3>)>
 	'if ' e1 'then' = 'if (' <expression e1> ')\n'
 	'while ' e1 'do' = 'while (' <expression e1> ')\n'
-	'rpt' = 'do\n'
-	'untl ' e1 = 'while ( ! ('<expression e1>'));\n'
 	e1 ':=' e2 = <assignment ( <unspace e1> ) <unspace e2>> ';\n'
 	'write' e(' ')8 '(' e1 ')' = <print <unspace e1>> ';\n'
 	'writeln' e(' ')8 '(' e1 ')' = <print <unspace e1>> ';\n'
