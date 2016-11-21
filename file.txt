@@ -3,6 +3,8 @@ program mine(output);
 const 
     alpha = 5;
     beta = "beta";
+    alpha = "alpha";
+    blue = "blue";
 
 var i : integer; 
     j : double;
@@ -10,13 +12,14 @@ var i : integer;
 function next(k,p,d: integer; var i:integer): integer;
   
   var
+  i : integer;
   j : double;
   ttg : integer;
   
   begin
     i := 1;
     j := 2;
-    writeln(i + 4);
+    writeln(1);
   end;
   
 procedure proc(k,p,d: integer);
@@ -32,17 +35,16 @@ begin
   i := next(1,2,3, i);
 
   i := 1;
-  j := 2 + 7 - 12;
+  j := (j+7)*2 - (12 + 3);
   
   if true then
   writeln("here");
   else 
-  j := 9;
-  
+  writeln("not here");  
   repeat
-  writeln ("word");
+  writeln ("color is", blue);
   until i > j;
-  
+  writeln ("dead");
   writeln ("bread");
   
   for i := 2 to 10 do 
